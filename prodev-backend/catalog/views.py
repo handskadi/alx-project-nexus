@@ -1,16 +1,13 @@
-from rest_framework import viewsets, filters
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import Product, Category
-from .serializers import ProductSerializer, CategorySerializer
+from rest_framework import viewsets, permissions
+from .models import Category, Product
+from .serializers import CategorySerializer, ProductSerializer
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]  # public for now
 
 class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all().order_by("-created_at")
+    queryset = Product.objects.all().order_by('-created_at')
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ["category__name"]
-    ordering_fields = ["price", "created_at"]
-    search_fields = ["title"]
+    permission_classes = [permissions.AllowAny]  # public for now
