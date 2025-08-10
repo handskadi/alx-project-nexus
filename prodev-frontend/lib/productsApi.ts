@@ -6,6 +6,9 @@ export type Product = {
   price: number;
   category: string;
   image: string;
+  rating?: number; // 0–5
+  reviewsCount?: number; // count
+  badge?: "Best Seller" | "Limited" | "New" | "Popular";
 };
 
 export type ProductsQuery = {
