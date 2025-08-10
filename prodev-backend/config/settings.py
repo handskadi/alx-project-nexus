@@ -8,6 +8,7 @@ DEBUG = True
 ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS = [
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -19,15 +20,18 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'corsheaders',            # <-- CORS
+    'drf_spectacular',        # <-- Swagger/OpenAPI
 
     # Local
     'catalog',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # <-- keep this at the very top (before CommonMiddleware)
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',  # CORS needs to come before this
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -54,7 +58,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# SQLite for dev (swap to Postgres later)
+# SQLite for development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -77,6 +81,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# DRF
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -88,10 +93,31 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
+
+    # Swagger/OpenAPI via drf-spectacular
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+# JWT
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# CORS (allow your Next.js dev origin)
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+# If you test from other ports/hosts in dev, you can loosen it:
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# Swagger/OpenAPI settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MK E‑Shop API',
+    'DESCRIPTION': 'Backend API for MK E‑Shop (products, categories, auth)',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,  # we expose /api/schema/ and UI at /api/docs/
+    'COMPONENT_SPLIT_REQUEST': True,
 }
