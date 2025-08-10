@@ -4,21 +4,23 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCartCount } from '@/lib/slices/cartSlice';
+import { selectWishlistCount } from '@/lib/slices/wishlistSlice';
 import CartModal from './CartModal';
+import WishlistModal from './WishlistModal';
 
 export default function Navbar() {
     const [openCart, setOpenCart] = useState(false);
+    const [openWish, setOpenWish] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const count = useSelector(selectCartCount);
+    const cartCount = useSelector(selectCartCount);
+    const wishCount = useSelector(selectWishlistCount);
 
     return (
         <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/90 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">
-                        MK
-                    </span>
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">MK</span>
                     <span className="text-lg font-bold tracking-tight">MK E‑Shop</span>
                 </Link>
 
@@ -29,7 +31,19 @@ export default function Navbar() {
                     <a href="/#deals" className="text-sm hover:text-emerald-700">Deals</a>
                     <a href="/#contact" className="text-sm hover:text-emerald-700">Contact</a>
 
-                    {/* Cart button */}
+                    {/* Wishlist */}
+                    <button
+                        onClick={() => setOpenWish(true)}
+                        className="relative rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
+                        aria-label="Open wishlist"
+                    >
+                        <span className="mr-2">Wishlist</span>
+                        <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-rose-600 px-1 text-xs font-bold text-white">
+                            {wishCount}
+                        </span>
+                    </button>
+
+                    {/* Cart */}
                     <button
                         onClick={() => setOpenCart(true)}
                         className="relative rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
@@ -37,28 +51,29 @@ export default function Navbar() {
                     >
                         <span className="mr-2">Cart</span>
                         <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-600 px-1 text-xs font-bold text-white">
-                            {count}
+                            {cartCount}
                         </span>
                     </button>
                 </nav>
 
                 {/* Mobile controls */}
                 <div className="flex items-center gap-2 md:hidden">
-                    {/* Cart button (mobile) */}
-                    <button
-                        className="relative rounded-md border px-3 py-2"
-                        onClick={() => setOpenCart(true)}
-                        aria-label="Open cart"
-                    >
-                        Cart
-                        {count > 0 && (
-                            <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-600 px-1 text-xs font-bold text-white">
-                                {count}
+                    <button className="relative rounded-md border px-3 py-2" onClick={() => setOpenWish(true)} aria-label="Open wishlist">
+                        WL
+                        {wishCount > 0 && (
+                            <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-rose-600 px-1 text-xs font-bold text-white">
+                                {wishCount}
                             </span>
                         )}
                     </button>
-
-                    {/* Hamburger */}
+                    <button className="relative rounded-md border px-3 py-2" onClick={() => setOpenCart(true)} aria-label="Open cart">
+                        Cart
+                        {cartCount > 0 && (
+                            <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-600 px-1 text-xs font-bold text-white">
+                                {cartCount}
+                            </span>
+                        )}
+                    </button>
                     <button
                         className="inline-flex h-9 w-9 items-center justify-center rounded-md border"
                         onClick={() => setMobileOpen((v) => !v)}
@@ -83,7 +98,8 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* Cart modal (centered popup) */}
+            {/* Modals */}
+            <WishlistModal open={openWish} onClose={() => setOpenWish(false)} />
             <CartModal open={openCart} onClose={() => setOpenCart(false)} />
         </header>
     );

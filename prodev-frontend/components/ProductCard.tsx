@@ -1,14 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/lib/slices/cartSlice';
+import { toggleWishlist, selectIsWished } from '@/lib/slices/wishlistSlice';
 import type { Product } from '@/lib/productsApi';
-import { HeartIcon } from './icons/HeartIcon';
 import RatingStars from './RatingStars';
+import { HeartOutline, HeartSolid } from './icons/HeartIcon';
 
 export default function ProductCard({ product }: { product: Product }) {
     const dispatch = useDispatch();
+    const isWished = useSelector(selectIsWished(product.id));
+
     const {
         title,
         price,
@@ -39,13 +42,18 @@ export default function ProductCard({ product }: { product: Product }) {
                     </span>
                 )}
 
-                {/* Wishlist */}
+                {/* Wishlist toggle */}
                 <button
                     type="button"
-                    aria-label="Add to wishlist"
-                    className="absolute right-3 top-3 rounded-full border border-white/30 bg-white/80 p-2 backdrop-blur transition hover:bg-white"
+                    aria-label={isWished ? 'Remove from wishlist' : 'Add to wishlist'}
+                    onClick={() => dispatch(toggleWishlist(product))}
+                    className="absolute right-3 top-3 rounded-full border border-white/30 bg-white/90 p-2 backdrop-blur transition hover:bg-white"
                 >
-                    <HeartIcon className="h-4 w-4 text-gray-800" />
+                    {isWished ? (
+                        <HeartSolid className="h-4 w-4 text-rose-600" />
+                    ) : (
+                        <HeartOutline className="h-4 w-4 text-gray-800" />
+                    )}
                 </button>
             </div>
 
@@ -66,8 +74,6 @@ export default function ProductCard({ product }: { product: Product }) {
 
                 <div className="flex items-baseline gap-2">
                     <span className="text-lg font-bold text-gray-900">£{price.toFixed(2)}</span>
-                    {/* Optional compare-at:
-          <span className="text-sm text-gray-400 line-through">£{(price * 1.2).toFixed(2)}</span> */}
                 </div>
 
                 <div className="pt-1">

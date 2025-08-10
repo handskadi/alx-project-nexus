@@ -4,6 +4,7 @@ import Providers from './providers';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CartPersistence from './CartPersistence';
+import WishlistPersistence from './WishlistPersistence';
 
 export const metadata: Metadata = {
   title: 'MK E‑Shop',
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Providers>
           <CartPersistence />
+          <WishlistPersistence />
           <Navbar />
           <main className="mx-auto max-w-7xl px-4">{children}</main>
           <Footer />
