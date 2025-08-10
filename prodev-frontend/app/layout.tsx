@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Providers from './providers';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'ProDev Catalog',
-  description: 'Dynamic e-commerce product catalog',
+  title: 'MK E‑Shop',
+  description: 'Premium e‑commerce catalog built with Next.js',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,7 +14,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-gray-50 text-gray-900">
         <Providers>
-          <div className="mx-auto max-w-7xl px-4 py-8">{children}</div>
+          <Navbar />
+          <main className="mx-auto max-w-7xl px-4">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>

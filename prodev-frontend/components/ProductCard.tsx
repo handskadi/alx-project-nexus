@@ -11,14 +11,8 @@ export default function ProductCard({ product }: { product: Product }) {
         <article className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg">
             {/* Image */}
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-                <Image
-                    src={image}
-                    alt={title}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
-                    className="object-contain transition-transform duration-300 group-hover:scale-105"
-                    priority={false}
-                />
+                <img src={product.image} alt={product.title} className="h-full w-full object-contain" />
+
                 {/* Badge */}
                 {badge && (
                     <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-amber-500/90 px-2.5 py-1 text-xs font-semibold text-white shadow">
