@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     selectWishlistMap,
@@ -10,11 +11,18 @@ import {
 } from '@/lib/slices/wishlistSlice';
 import { addToCart } from '@/lib/slices/cartSlice';
 
+type WishlistItem = {
+    id: string;
+    title: string;
+    image: string;
+    price: number;
+};
+
 export default function WishlistModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     const dispatch = useDispatch();
     const map = useSelector(selectWishlistMap);
     const count = useSelector(selectWishlistCount);
-    const list = Object.values(map);
+    const list = Object.values(map) as WishlistItem[];
     const closeBtnRef = useRef<HTMLButtonElement>(null);
 
     // ESC close
@@ -30,7 +38,9 @@ export default function WishlistModal({ open, onClose }: { open: boolean; onClos
         if (!open) return;
         const prev = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = prev; };
+        return () => {
+            document.body.style.overflow = prev;
+        };
     }, [open]);
 
     // Focus
@@ -39,26 +49,38 @@ export default function WishlistModal({ open, onClose }: { open: boolean; onClos
     }, [open]);
 
     const moveToCart = (id: string) => {
-        const it = map[id];
+        const it = map[id] as WishlistItem | undefined;
         if (!it) return;
-        dispatch(addToCart({ ...it, category: '', rating: 5, reviewsCount: 0, badge: undefined, qty: 1 } as any));
+        dispatch(
+            addToCart({
+                ...it,
+                category: '',
+                rating: 5,
+                reviewsCount: 0,
+                badge: undefined,
+                qty: 1,
+            })
+        );
         dispatch(removeFromWishlist({ id }));
     };
 
     return (
         <>
             <div
-                className={`fixed inset-0 z-[60] bg-black/40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                className={`fixed inset-0 z-[60] bg-black/40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'
+                    }`}
                 onClick={onClose}
             />
             <div
                 role="dialog"
                 aria-modal="true"
                 aria-label="Wishlist"
-                className={`fixed inset-0 z-[61] grid place-items-center p-4 transition ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+                className={`fixed inset-0 z-[61] grid place-items-center p-4 transition ${open ? 'opacity-100' : 'pointer-events-none opacity-0'
+                    }`}
             >
                 <div
-                    className={`relative w-full max-w-2xl transform rounded-2xl bg-white shadow-2xl transition-all ${open ? 'scale-100' : 'scale-95'}`}
+                    className={`relative w-full max-w-2xl transform rounded-2xl bg-white shadow-2xl transition-all ${open ? 'scale-100' : 'scale-95'
+                        }`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex items-center justify-between border-b p-4">
@@ -79,7 +101,14 @@ export default function WishlistModal({ open, onClose }: { open: boolean; onClos
                             <ul className="space-y-4">
                                 {list.map((it) => (
                                     <li key={it.id} className="flex gap-3">
-                                        <img src={it.image} alt={it.title} className="h-20 w-20 rounded border object-contain" />
+                                        <Image
+                                            src={it.image}
+                                            alt={it.title}
+                                            width={80} // matches h-20
+                                            height={80} // matches w-20
+                                            className="rounded border object-contain"
+                                            style={{ width: '80px', height: '80px' }}
+                                        />
                                         <div className="min-w-0 flex-1">
                                             <p className="truncate text-sm font-medium">{it.title}</p>
                                             <p className="text-sm text-gray-600">£{it.price.toFixed(2)}</p>
@@ -105,7 +134,9 @@ export default function WishlistModal({ open, onClose }: { open: boolean; onClos
                     </div>
 
                     <div className="flex items-center justify-between border-t p-4">
-                        <span className="text-sm text-gray-600">You can add items to cart or keep them saved for later.</span>
+                        <span className="text-sm text-gray-600">
+                            You can add items to cart or keep them saved for later.
+                        </span>
                         <button
                             className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
                             onClick={() => dispatch(clearWishlist())}

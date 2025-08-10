@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/lib/store';
 import { hydrate, selectCartItems } from '@/lib/slices/cartSlice';
 
 const STORAGE_KEY = 'mk_cart_v1';

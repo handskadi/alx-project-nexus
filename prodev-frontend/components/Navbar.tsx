@@ -7,11 +7,14 @@ import { selectCartCount } from '@/lib/slices/cartSlice';
 import { selectWishlistCount } from '@/lib/slices/wishlistSlice';
 import CartModal from './CartModal';
 import WishlistModal from './WishlistModal';
+import CheckoutModal from './CheckoutModal';
 
 export default function Navbar() {
+    const [mobileOpen, setMobileOpen] = useState(false);
     const [openCart, setOpenCart] = useState(false);
     const [openWish, setOpenWish] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
+    const [openCheckout, setOpenCheckout] = useState(false);
+
     const cartCount = useSelector(selectCartCount);
     const wishCount = useSelector(selectWishlistCount);
 
@@ -21,15 +24,15 @@ export default function Navbar() {
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-white font-bold">MK</span>
-                    <span className="text-lg font-bold tracking-tight">MK E‑Shop</span>
+                    <span className="text-lg font-bold tracking-tight">MK E-Shop</span>
                 </Link>
 
                 {/* Desktop nav */}
                 <nav className="hidden items-center gap-6 md:flex">
                     <Link href="/" className="text-sm hover:text-emerald-700">Home</Link>
-                    <a href="/#catalog" className="text-sm hover:text-emerald-700">Shop</a>
-                    <a href="/#deals" className="text-sm hover:text-emerald-700">Deals</a>
-                    <a href="/#contact" className="text-sm hover:text-emerald-700">Contact</a>
+                    <Link href="/#catalog" className="text-sm hover:text-emerald-700">Shop</Link>
+                    <Link href="/#deals" className="text-sm hover:text-emerald-700">Deals</Link>
+                    <Link href="/#contact" className="text-sm hover:text-emerald-700">Contact</Link>
 
                     {/* Wishlist */}
                     <button
@@ -91,16 +94,21 @@ export default function Navbar() {
                 <div className="border-t border-gray-200 bg-white md:hidden">
                     <nav className="mx-auto max-w-7xl space-y-2 px-4 py-3">
                         <Link href="/" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Home</Link>
-                        <a href="/#catalog" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Shop</a>
-                        <a href="/#deals" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Deals</a>
-                        <a href="/#contact" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Contact</a>
+                        <Link href="/#catalog" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Shop</Link>
+                        <Link href="/#deals" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Deals</Link>
+                        <Link href="/#contact" className="block rounded px-3 py-2 hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Contact</Link>
                     </nav>
                 </div>
             )}
 
             {/* Modals */}
             <WishlistModal open={openWish} onClose={() => setOpenWish(false)} />
-            <CartModal open={openCart} onClose={() => setOpenCart(false)} />
+            <CartModal
+                open={openCart}
+                onClose={() => setOpenCart(false)}
+                onCheckout={() => setOpenCheckout(true)}
+            />
+            <CheckoutModal open={openCheckout} onClose={() => setOpenCheckout(false)} />
         </header>
     );
 }
