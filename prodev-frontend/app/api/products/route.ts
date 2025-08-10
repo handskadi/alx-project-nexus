@@ -5,7 +5,7 @@ const MOCK = Array.from({ length: 120 }).map((_, i) => ({
   title: `Sample Product ${i + 1}`,
   price: Number((Math.random() * 200 + 10).toFixed(2)),
   category: ["Electronics", "Fashion", "Home", "Sports"][i % 4],
-  image: "https://via.placeholder.com/300x200?text=Product",
+  image: "https://placehold.co/300x200/jpg?text=Product",
 }));
 
 export async function GET(req: NextRequest) {
