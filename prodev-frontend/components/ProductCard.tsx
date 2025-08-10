@@ -1,17 +1,36 @@
-// components/ProductCard.tsx
+'use client';
+
 import Image from 'next/image';
-import { Product } from '@/lib/productsApi';
-import { HeartIcon } from './icons/HeartIcon'; // small inline SVG below
+import { useDispatch } from 'react-redux';
+import { addToCart } from '@/lib/slices/cartSlice';
+import type { Product } from '@/lib/productsApi';
+import { HeartIcon } from './icons/HeartIcon';
 import RatingStars from './RatingStars';
 
 export default function ProductCard({ product }: { product: Product }) {
-    const { title, price, category, image, rating = 4.6, reviewsCount = 120, badge } = product;
+    const dispatch = useDispatch();
+    const {
+        title,
+        price,
+        category,
+        image,
+        rating = 4.6,
+        reviewsCount = 120,
+        badge,
+    } = product;
 
     return (
         <article className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg">
-            {/* Image */}
+            {/* Image area */}
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-                <img src={product.image} alt={product.title} className="h-full w-full object-contain" />
+                <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
+                    className="object-contain transition-transform duration-300 group-hover:scale-105"
+                    priority={false}
+                />
 
                 {/* Badge */}
                 {badge && (
@@ -19,27 +38,21 @@ export default function ProductCard({ product }: { product: Product }) {
                         {badge}
                     </span>
                 )}
+
                 {/* Wishlist */}
                 <button
+                    type="button"
                     aria-label="Add to wishlist"
                     className="absolute right-3 top-3 rounded-full border border-white/30 bg-white/80 p-2 backdrop-blur transition hover:bg-white"
                 >
                     <HeartIcon className="h-4 w-4 text-gray-800" />
                 </button>
-                {/* Hover actions */}
-                <div className="pointer-events-none absolute inset-x-3 bottom-3 flex gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                    <button className="pointer-events-auto flex-1 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white shadow hover:bg-black">
-                        Add to Cart
-                    </button>
-                    <button className="pointer-events-auto rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-900 ring-1 ring-gray-200 hover:bg-gray-50">
-                        Quick View
-                    </button>
-                </div>
             </div>
 
             {/* Content */}
             <div className="space-y-2 p-4">
                 <div className="text-xs font-medium text-emerald-700">{category}</div>
+
                 <h3 className="min-h-12 text-sm font-semibold text-gray-900">
                     <a className="focus:outline-none focus:ring-2 focus:ring-emerald-500/40" href="#">
                         <span className="line-clamp-2">{title}</span>
@@ -53,8 +66,18 @@ export default function ProductCard({ product }: { product: Product }) {
 
                 <div className="flex items-baseline gap-2">
                     <span className="text-lg font-bold text-gray-900">£{price.toFixed(2)}</span>
-                    {/* Optional compare-at price style */}
-                    {/* <span className="text-sm text-gray-400 line-through">£{(price * 1.2).toFixed(2)}</span> */}
+                    {/* Optional compare-at:
+          <span className="text-sm text-gray-400 line-through">£{(price * 1.2).toFixed(2)}</span> */}
+                </div>
+
+                <div className="pt-1">
+                    <button
+                        type="button"
+                        onClick={() => dispatch(addToCart({ ...product, qty: 1 }))}
+                        className="w-full rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow transition hover:bg-black"
+                    >
+                        Add to Cart
+                    </button>
                 </div>
             </div>
         </article>
